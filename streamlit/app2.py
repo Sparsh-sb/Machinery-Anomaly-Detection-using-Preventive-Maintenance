@@ -11,7 +11,7 @@ print(f"Loading model from: {model_path}")
 print(f"Loading scaler from: {scaler_path}")
 model, meta_data = load_model(model_path)
 scaler = joblib.load(scaler_path)
-class_mapping = {0: "Normal", 1: "Failure"}
+class_mapping = {0: "Normal", 1: "Pre-Failure", 2: "Failure"}
 
 
 def make_prediction(data):
@@ -66,8 +66,12 @@ def display_main_page():
                 if isinstance(prediction, str):
                     st.error(prediction)
                 else:
-                    st.success(f"Predicted Class: {prediction.predicted_class}")
-                    st.write(f"Confidence: {prediction.confidence}")
+                    if prediction.predicted_class == "Pre-Failure" || prediction.predicted_class == "Failure":
+                        st.error(f"Predicted Class: {prediction.predicted_class}")
+                        st.write(f"Confidence: {prediction.confidence}")
+                    else:
+                        st.success(f"Predicted Class: {prediction.predicted_class}")
+                        st.write(f"Confidence: {prediction.confidence}")
             except ValueError:
                 st.error("Please enter 16 comma-separated numerical values.")
 
